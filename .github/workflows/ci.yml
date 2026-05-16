@@ -73,6 +73,10 @@ jobs:
       - name: Check metrics endpoint
         run: curl -sf http://localhost:9100/metrics | grep transaction_received
 
+  teardown:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
       - name: Tear down
         if: always()
         run: docker compose down -v
