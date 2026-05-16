@@ -128,7 +128,7 @@ resource "aws_ecs_task_definition" "processing" {
 
 resource "aws_ecs_service" "processing" {
   name            = "processing"
-  cluster         = aws_ecs_cluster.fintech.id
+  cluster         = aws_ecs_cluster.myra_cluster.id
   task_definition = aws_ecs_task_definition.processing.arn
   desired_count   = 1
   launch_type     = "EC2"
