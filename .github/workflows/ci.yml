@@ -54,15 +54,15 @@ jobs:
       - name: Start pipeline
         run: docker compose up -d
 
-      - name: Wait for ingestion to start
+      - name: Check running containers
+        run: docker ps -a
+
+      - name: Check ingestion is up
         run: |
-          for i in $(seg 1 15); do
-            if curl -sf http://localhost:8000/health; then
-              echo "Ingestion is up"
-              break
-            fi
-            sleep 3
-          done
+          if curl -sf http://localhost:8000/health; then
+            echo "Ingestion is up"
+            break
+          fi
 
       - name: Send a transaction
         run: |
