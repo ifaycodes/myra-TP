@@ -89,7 +89,7 @@ jobs:
 
       - name: Push images to ECR
         run: |
-          chmod +x scripts/push_to_ecr.sh
+          chmod +x scripts/push-to-ecr.sh
           ./scripts/push_to_ecr.sh
 
       - name: Setup Terraform
