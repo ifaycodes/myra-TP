@@ -18,10 +18,38 @@ jobs:
         run: echo "Pipeline is running!"
 
       - name: List project files
-        run: ls -la
+        run: ls
 
-      - name: Build all containers
-        run: docker compose build
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with: 
+          python-version: "3.11"
+
+      - name: Install Install dependencies (ingestion)
+        run: pip install -r ingestion/requirements.txt
+
+      - name: Install dependencies (processing)
+        run: pip install -r processing/requirements.txt
+
+      - name: Install dependencies (validation)
+        run: pip install -r validation/requirements.txt
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build ingestion image
+        run: docker build -t fintech-ingestion ./ingestion
+
+      - name: Build processing image
+        run: docker build -t fintech-processing ./processing
+
+      - name: Build validation image
+        run: docker build -t fintech-validation ./validation
 
       - name: Start pipeline
         run: docker compose up -d
