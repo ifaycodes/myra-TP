@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: validation
-          image: validation:latest    # your docker image
+          image: ifayy/validation:latest    # your docker image
           ports:
             - containerPort: 9101   # port the container listens on
           env:
