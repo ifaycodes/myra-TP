@@ -90,7 +90,7 @@ jobs:
       - name: Push images to ECR
         run: |
           chmod +x scripts/push-to-ecr.sh
-          ./scripts/push_to_ecr.sh
+          ./scripts/push-to-ecr.sh
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
