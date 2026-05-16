@@ -1,0 +1,89 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  ingestion:
+    build: ./ingestion
+    container_name: ingestion
+    ports: 
+      - "8000:8000"
+      - "9100:9100"
+    environment:
+      - REDIS_HOST=redis
+    depends_on: [redis]
+
+  validation:
+    build: ./validation
+    container_name: validation
+    ports: 
+      - "9101:9101"
+    environment:
+      - REDIS_HOST=redis
+    depends_on: [redis]
+
+  processing:
+    build: ./processing
+    container_name: processing
+    ports: 
+      - "9102:9102"
+    environment:
+      - REDIS_HOST=redis
+      - DB_HOST=db
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_NAME=transactions
+
+    depends_on: [redis, db]
+
+  db:
+    image: mysql:8
+    container_name: db
+    ports:
+      - "3306:3306"
+
+    environment:
+      MYSQL_DATABASE: transactions
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: rootpassword
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+  
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafanaa
+    ports:
+      - "3000:3000"
+
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+
+
+
+volumes:
+  db_data:
+  grafana_data:
