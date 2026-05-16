@@ -44,11 +44,11 @@ jobs:
 
       - name: Build images
         run: |
-          docker build -t fintech-ingestion ./ingestion
-          docker build -t fintech-processing ./processing
-          docker build -t fintech-validation ./validation
+          docker build -t ingestion ./ingestion
+          docker build -t processing ./processing
+          docker build -t validation ./validation
 
-      - name: Start pipeline
+      - name: Start images
         run: docker compose up -d
 
       - name: Check running containers
@@ -86,6 +86,13 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-2
+
+
+      - name: Build images
+        run: |
+          docker build -t ingestion ./ingestion
+          docker build -t processing ./processing
+          docker build -t validation ./validation
 
       - name: Push images to ECR
         run: |
