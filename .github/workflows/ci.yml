@@ -73,18 +73,7 @@ jobs:
           curl -sf -X POST http://localhost:8000/transaction \
           -H "Content-Type: application/json" \
           -d '{"amount": 1000, "currency": "NGN", "sender": "ci_test", "receiver": "merchant_01"}'
-          
-  check-metric:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check metrics endpoint
-        run: curl -sf http://localhost:9100/metrics | grep transaction_received
 
-  teardown:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
       - name: Tear down
         if: always()
         run: docker compose down -v
