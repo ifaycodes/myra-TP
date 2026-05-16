@@ -3,5 +3,4 @@ namespace.yml
 push-to-docker.sh
 .terraform
 .terraform.lock.hcl
-terraform.tfvars
 terraform.tfstate
