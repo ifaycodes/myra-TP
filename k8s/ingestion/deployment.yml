@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingestion          # name of this deployment
+  namespace: myra-pipeline
+spec:
+  replicas: 1              # how many copies to run
+  selector:
+    matchLabels:
+      app: ingestion       # links deployment to its pods
+  template:
+    metadata:
+      labels:
+        app: ingestion     # must match selector above
+    spec:
+      containers:
+        - name: ingestion
+          image: ingestion:latest    # docker image
+          ports:
+            - containerPort: 8000   # port the container listens on
+            - containerPort: 9100
+          env:
+            - name: REDIS_HOST
+              value: redis          # same as docker-compose environment

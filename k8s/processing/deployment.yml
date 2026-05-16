@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: processing          # name of this deployment
+  namespace: myra-pipeline
+spec:
+  replicas: 1              # how many copies to run
+  selector:
+    matchLabels:
+      app: processing       # links deployment to its pods
+  template:
+    metadata:
+      labels:
+        app: processing     # must match selector above
+    spec:
+      containers:
+        - name: processing
+          image: processing:latest    # your docker image
+          ports:
+            - containerPort: 9102   # port the container listens on
+          env:
+            - name: REDIS_HOST
+              value: redis          # same as docker-compose environment
+
+            - name: DB_HOST
+              value: db
+
+            - name: DB_NAME
+              valueFrom:
+                secretKEyRef:
+                  name: db-secret
+                  key: DB_NAME
+
+            - name: DB_USER
+              valueFrom:
+                secretKEyRef:
+                  name: db-secret
+                  key: DB_USER
+
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKEyRef:
+                  name: db-secret
+                  key: DB_PASSWORD
+            

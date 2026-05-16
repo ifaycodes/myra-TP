@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: validation
+  namespace: myra-pipeline
+spec:
+  selector:
+    app: validation        # finds pods with this label
+  ports:
+    - port: 9101          # port other services use to reach this one
+      targetPort: 9101    # port the container actually listens on
+  type: ClusterIP         # internal only — use NodePort to expose outside

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: processing
+  namespace: myra-pipeline
+spec:
+  selector:
+    app: processing        # finds pods with this label
+  ports:
+    - port: 9102          # port other services use to reach this one
+      targetPort: 9102    # port the container actually listens on
+  type: ClusterIP         # internal only — use NodePort to expose outside

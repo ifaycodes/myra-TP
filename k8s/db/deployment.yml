@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db          # name of this deployment
+spec:
+  replicas: 1              # how many copies to run
+  selector:
+    matchLabels:
+      app: db       # links deployment to its pods
+  template:
+    metadata:
+      labels:
+        app: db     # must match selector above
+    spec:
+      containers:
+        - name: db
+          image: mysql:8    # your docker image
+          ports:
+            - containerPort: 3306   # port the container listens on
+          env:
+            - name: MYSQL_DATABASE
+              value: transactions
+              
+            - name: MYSQL_USER
+              value: user
+
+            - name: MYSQL_PASSWORD
+              value: password
+
+            - name: MYSQL_ROOT_PASSWORD
+              value: rootpassword
+              
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: db-data
+          persistentVolumeClaim:
+            claimName: db-data

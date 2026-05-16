@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: validation          # name of this deployment
+  namespace: myra-pipeline
+spec:
+  replicas: 1              # how many copies to run
+  selector:
+    matchLabels:
+      app: validation       # links deployment to its pods
+  template:
+    metadata:
+      labels:
+        app: validation     # must match selector above
+    spec:
+      containers:
+        - name: validation
+          image: validation:latest    # your docker image
+          ports:
+            - containerPort: 9101   # port the container listens on
+          env:
+            - name: REDIS_HOST
+              value: redis          # same as docker-compose environment
