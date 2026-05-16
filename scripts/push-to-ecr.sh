@@ -29,7 +29,7 @@ docker push $ECR_URI/processing:latest
 echo ""
 echo "Done."
 
-cat > ../terraform/terraform.tfvars <<EOF
+cat > ./terraform/terraform.tfvars <<EOF
 ingestion_image  = "$ECR_URI/ingestion:latest"
 validation_image = "$ECR_URI/validation:latest"
 processing_image = "$ECR_URI/processing:latest"
