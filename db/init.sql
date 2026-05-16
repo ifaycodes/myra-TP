@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS transactions (
+    id VARCHAR(36) PRIMARY KEY,
+    amount DECIMAL(10,2) NOT NULL,
+    currency VARCHAR(10) NOT NULL,
+    sender VARCHAR(100) NOT NULL,
+    receiver VARCHAR(100) NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    processed_at TIMESTAMP NULL
+);
