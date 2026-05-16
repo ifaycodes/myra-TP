@@ -1,0 +1,50 @@
+name: fintech CI pipeline
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test the pipeline
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Print a message
+        run: echo "Pipeline is running!"
+
+      - name: List project files
+        run: ls -la
+
+      - name: Build all containers
+        run: docker compose build
+
+      - name: Start pipeline
+        run: docker compose up -d
+
+      - name: Wait for ingestion to start
+        run: |
+          for i in $(seg 1 15); do
+            if curl -sf http://localhost:8000/health; then
+              echo "Ingestion is up"
+              break
+            fi
+            sleep 3
+          done
+
+      - name: Send a transaction
+        run: |
+          curl -sf -X POST http://localhost:8000/transaction \
+          -H "Content-Type: application/json" \
+          -d '{"amount": 1000, "currency": "NGN", "sender": "ci_test", "receiver": "merchant_01"}'
+
+      - name: Check metrics endpoint
+        run: curl -sf http://localhost:9100/metrics | grep transaction_received
+
+      - name: Tear down
+        if: always()
+        run: docker compose down -v
